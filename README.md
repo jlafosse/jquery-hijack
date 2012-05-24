@@ -84,19 +84,19 @@ Setting this to true hijacks the new content.
     canRehijack (boolean Default:true)
 Setting this to false will prevent (potential) subsequent hijack calls from overwriting the hijacked settings for a specific link or form.
 
-    confirmHijack (function Default:returns true)
+    confirmHijack (function,string Default:returns true)
 This callback is fired before hijacking is started. The passed function must return true or false. If the returned value of this callback returns anything but true then the hijacking is aborted.
 
-    beforeHijack (function)
+    beforeHijack (function,string)
 This callback is fired after the confirm hijack but before hijacking is started.
 
-    afterHijack (function)
+    afterHijack (function,string)
 This callback is fired after the hijacking has completed, regardless of success or failure.
 
-    onSuccess ( function Default: sets the target html with the xhr response)
+    onSuccess ( function,string Default: sets the target html with the xhr response)
 This callback is fired when the ajax responds with success.
 
-    onError ( function Default: alert box with xhr response)
+    onError ( function,string Default: alert box with xhr response)
 This callback is fired when the ajax responds with an error.
 
 Setting Options
@@ -119,7 +119,8 @@ Setting the data attribute inline: (**note:** JSON standard requires "double" qu
     
     <div id="foo" data-hijack='{"hrefs":"false","recursive":"true"}'>
     
-Shortcut toggling of links & forms: [1|0|true|false]
+Shortcut toggling of links & forms via the data-hijack attribute: [1|0|true|false]
+
     <a data-hijack="0" href="/foo.html">This link will not be hijacked!</a>
     <form data-hijack="0" action="/foo.html">This form will not be hijacked!</form>
     
@@ -214,7 +215,7 @@ This example shows how to incorporate some type of 3rd party "loading,spinner,wa
     
 Example 4
 =============
-This example shows how to use the onSuccess & onError callbacks. In this example the content of a successfull response will be loaded into a 3rd party modal popup.
+This example shows how to use the onSuccess & onError callbacks. In this example the content of a successfull response will be loaded into a 3rd party popup plugin.
 
     <div id="ex4">
         <p>Lorem Ipsum...</p>
@@ -233,5 +234,6 @@ This example shows how to use the onSuccess & onError callbacks. In this example
         }); 
     });
     </script>
+
 
     
