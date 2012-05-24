@@ -152,7 +152,7 @@ This example shows how to hijack Links & Forms within a div. Notice that the sec
 
     <div id="ex1">
         <p>Lorem ipsum....</p>
-        <a href="/foo.html">Continue È</a>
+        <a href="/foo.html">Continue</a>
         <form>
             Name: <input name="fname">
             <input type="submit">
@@ -172,7 +172,7 @@ This example shows how to target alternative elements.
 
     <div id="ex2">
         <p>I am the source container</p>
-        <a href="/foo.html">Continue È</a>
+        <a href="/foo.html">Continue</a>
         <form>
             Name: <input name="fname">
             <input type="submit">
@@ -194,7 +194,7 @@ This example shows how to incorporate some type of 3rd party "loading,spinner,wa
 
     <div id="ex3">
         <p>Lorem Ipsum...</p>
-        <a href="/foo.html">Continue È</a>
+        <a href="/foo.html">Continue</a>
     </div>
      
     <script>
@@ -219,7 +219,7 @@ This example shows how to use the onSuccess & onError callbacks. In this example
 
     <div id="ex4">
         <p>Lorem Ipsum...</p>
-        <a href="/foo.html">Continue È</a>
+        <a href="/foo.html">Continue</a>
     </div>
      
     <script>
