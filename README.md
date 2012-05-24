@@ -68,6 +68,9 @@ Toggles hijacking of links on/off.
     forms (boolean Default:true)
 Toggles hijacking of forms on/off.
 
+    target (selector Default:parent())
+Sets the target for the returned content. In addition it also defines the scope/context in which the ajax function runs.
+
     data (object,string Default:{})
 Data to be serialized & sent to the server. It is the same option available within the jquery ajax method.
 
@@ -108,7 +111,12 @@ Using the jquery.data() method:
     
     $('#foo').data('hijack',{hrefs:false,recursive:true}).hijack();
     
-Setting the data attribute inline:
+Setting the data attribute inline: (**note:** JSON standard requires "double" quotes so it is important to remember that the attribute itself must be enclosed with 'single' quotes.)
     
     <div id="foo" data-hijack='{"hrefs":"false","recursive":"true"}'>
     
+A couple additional points to remember in regard to options:
+
+ 1. Data attributes take precedence over options passed as object args
+ 2. Options set directly on link & form tags take precendence over parent options.
+ 3. If hijack() is called on the same element more than once, any new options/data will overwrite previous settings. You can prevent this behaviour by setting the option canRehijack:false.
