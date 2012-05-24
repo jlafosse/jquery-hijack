@@ -122,3 +122,24 @@ A few additional points to remember in regard to options:
  1. Data attributes take precedence over options passed as object args
  2. Options set directly on link & form tags take precendence over parent options.
  3. If hijack() is called on the same element more than once, any new options/data will overwrite previous settings. You can prevent this behaviour by setting the option canRehijack:false.
+
+Events
+======
+There are two events that can be subscribed to.
+
+beforeHijack - fires after the confirmHijack callback but before the ajax request is made.
+    $('a#foo').on('beforeHijack',function(){
+        alert('This link is about to be hijacked!');
+    });
+    
+afterHijack - fires after the ajax request has responded with success or failure.
+    $('a#foo').on('afterHijack',function(){
+        alert('This link was hijacked!');
+    });
+    
+More Examples
+=============
+
+
+
+    
