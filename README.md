@@ -117,7 +117,11 @@ Setting the data attribute inline: (**note:** JSON standard requires "double" qu
     
     <div id="foo" data-hijack='{"hrefs":"false","recursive":"true"}'>
     
-A few additional points to remember in regard to options:
+Shortcut toggling of links & forms: [1|0|true|false]
+    <a data-hijack="0" href="/foo.html">This link will not be hijacked!</a>
+    <form data-hijack="0" action="/foo.html">This form will not be hijacked!</form>
+    
+A few additional points to remember in regard to setting options:
 
  1. Data attributes take precedence over options passed as object args
  2. Options set directly on link & form tags take precendence over parent options.
@@ -139,9 +143,25 @@ There are two events that can be subscribed to.
         alert('This link was hijacked!');
     });
     
-More Examples
+Example 1
 =============
+This example shows how to hijack Links & Forms within a div. Notice that the second href has specifically set the data-hijack="0" so it nevers gets hijacked.
 
+    <div id="ex1">
+        <p>Lorem ipsum....</p>
+        <a href="/foo.html">Continue È</a>
+        <form>
+            Name: <input name="fname">
+            <input type="submit">
+        </form>
+        <a href="/bar.html" data-hijack="0">I will never be hijacked!</a>
+    </div>
+     
+    <script>
+    $(function(){
+        $('#ex1').hijack(); 
+    });
+    </script>
 
 
     
