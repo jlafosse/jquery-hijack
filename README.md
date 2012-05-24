@@ -12,6 +12,8 @@ Include script *after* the jQuery library (unless you are packaging scripts in a
 
 Usage
 =====
+Here are some basic usage examples. For further detailed examples please see below...
+
 Setup default values for future hijack requests:
 
     $.hijackSetup({
@@ -162,6 +164,74 @@ This example shows how to hijack Links & Forms within a div. Notice that the sec
         $('#ex1').hijack(); 
     });
     </script>
+    
+Example 2
+=============
+This example shows how to target alternative elements.
 
+    <div id="ex2">
+        <p>I am the source container</p>
+        <a href="/foo.html">Continue È</a>
+        <form>
+            Name: <input name="fname">
+            <input type="submit">
+        </form>
+        <a href="/bar.html" data-hijack='{"target":"body"}'>I am going to rebel and target the body!</a>
+    </div>
+    
+    <div id="ex2b">I am the target container</div>
+     
+    <script>
+    $(function(){
+        $('#ex2').hijack({target:$('ex2b')}); 
+    });
+    </script>
+
+Example 3
+=============
+This example shows how to incorporate some type of 3rd party "loading,spinner,waiting" plugin with a confirmation before the hijack is sent.
+
+    <div id="ex3">
+        <p>Lorem Ipsum...</p>
+        <a href="/foo.html">Continue È</a>
+    </div>
+     
+    <script>
+    $(function(){
+        $('#ex3').hijack({
+            confirmHijack:function(){
+                return confirm('Are you sure you want to do this?');
+            },
+            beforeHijack:function(){
+                $(this).spinner('start'); //start example spinner plugin
+            },
+            afterHijack:function(){
+                $(this).spinner('stop'); //stop example spinner plugin
+            }
+        }); 
+    });
+    </script>
+    
+Example 4
+=============
+This example shows how to use the onSuccess & onError callbacks. In this example the content of a successfull response will be loaded into a 3rd party modal popup.
+
+    <div id="ex4">
+        <p>Lorem Ipsum...</p>
+        <a href="/foo.html">Continue È</a>
+    </div>
+     
+    <script>
+    $(function(){
+        $('#ex4').hijack({
+            onSuccess:function(data){
+                $(this).popupModal(data);
+            },
+            onError:function(data){
+                console.log("ERROR:",data);
+            }
+        }); 
+    });
+    </script>
 
     
