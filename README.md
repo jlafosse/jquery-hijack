@@ -134,13 +134,13 @@ Events
 ======
 There are two events that can be subscribed to.
 
-*beforeHijack* fires after the confirmHijack callback but before the ajax request is made.
+**beforeHijack** fires after the confirmHijack callback but before the ajax request is made.
 
     $('a#foo').on('beforeHijack',function(){
         alert('This link is about to be hijacked!');
     });
     
-*afterHijack* fires after the ajax request has responded with success or failure.
+**afterHijack** fires after the ajax request has responded with success or failure.
 
     $('a#foo').on('afterHijack',function(){
         alert('This link was hijacked!');
