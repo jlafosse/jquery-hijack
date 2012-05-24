@@ -1,6 +1,8 @@
 jquery.hijack
 =============
-This jquery plugin allows links and forms to be "ajaxified" so that their default get/post behaviour is replaced with ajax calls. The returned content is then injected into the target container.
+This jquery plugin allows links and forms to be "ajaxified" so that their default get/post behaviour is replaced with ajax calls.
+The returned content is then injected into the target container. In addition this plugin offers some unique features such as global settings,
+callbacks, recursive hijacking, conversion of inline form event handlers and setting on inline data tag attributes.
 
 Installation
 ============
@@ -115,7 +117,7 @@ Setting the data attribute inline: (**note:** JSON standard requires "double" qu
     
     <div id="foo" data-hijack='{"hrefs":"false","recursive":"true"}'>
     
-A couple additional points to remember in regard to options:
+A few additional points to remember in regard to options:
 
  1. Data attributes take precedence over options passed as object args
  2. Options set directly on link & form tags take precendence over parent options.
