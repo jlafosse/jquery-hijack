@@ -2,7 +2,7 @@ jquery.hijack
 =============
 This jquery plugin allows links and forms to be "ajaxified" so that their default get/post behaviour is replaced with ajax calls.
 The returned content is then injected into the target container. In addition this plugin offers some unique features such as global settings,
-callbacks, recursive hijacking, conversion of inline form event handlers and setting on inline data tag attributes.
+callbacks, recursive hijacking, conversion of inline form event handlers and setting options via inline data attributes.
 
 Installation
 ============
