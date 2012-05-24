@@ -235,5 +235,17 @@ This example shows how to use the onSuccess & onError callbacks. In this example
     });
     </script>
 
+Changelog
+=========
+
+Development
+===========
+- Source hosted at [GitHub](https://github.com/jlafosse/jquery-hijack)
+- Report issues, questions, feature requests on [GitHub Issues](https://github.com/jlafosse/jquery-hijack/issues)
+
+Authors
+=======
+[Jason LaFosse](https://github.com/jlafosse)
+
 
     
