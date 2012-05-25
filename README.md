@@ -144,7 +144,7 @@ Setting the data attribute inline: (**note:** JSON standard requires "double" qu
     
     <div id="foo" data-hijack='{"hrefs":"false","recursive":"true"}'>
     
-Shortcut toggling of links & forms via the data-hijack attribute: [1|0|true|false|yes|no]
+Shortcut toggling of links & forms via the data-hijack attribute: [1,0,true,false,yes,no]
 
     <a data-hijack="0" href="/foo.html">This link will not be hijacked!</a>
     <form data-hijack="0" action="/foo.html">This form will not be hijacked!</form>
