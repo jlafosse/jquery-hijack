@@ -74,7 +74,7 @@ Options
 
     Toggles hijacking of forms on/off.
 
-- **data** [Object,String:{}]
+- **data** [Object,String:null]
 
     Data to be serialized & sent to the server. It is the same option available within the jquery ajax method.
 
