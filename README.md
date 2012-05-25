@@ -271,7 +271,7 @@ This example shows how callbacks can be set as inline strings. **Note:** Format 
     };
     
     $(function(){
-        $('#ex5').hijack(); 
+        $('#ex6').hijack(); 
     });
     </script>
 
