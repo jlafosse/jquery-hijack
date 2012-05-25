@@ -237,7 +237,7 @@ This example shows how to use the onSuccess & onError callbacks. In this example
     
 Example 5
 =============
-This example shows how to hijack plays nicely with inline form event handlers
+This example shows how hijack plays nicely with inline form event handlers. In the example below, the inline onSubmit handler will fire first, then the confirmHijack() callback will fire.
 
     <div id="ex5">
         <form action="/foo.html" onsubmit="return confirm('Are you sure you want to submit?');">
