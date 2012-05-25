@@ -4,6 +4,10 @@ This jquery plugin allows links and forms to be "ajaxified" so that their defaul
 The returned content is then injected into the target container. In addition this plugin offers some unique features such as global settings,
 callbacks, recursive hijacking, conversion of inline form event handlers and setting options via inline data attributes.
 
+Dependencies
+============
+jQuery of course :)
+
 Installation
 ============
 Include script *after* the jQuery library (unless you are packaging scripts in an alternative manner):
