@@ -1,6 +1,6 @@
 jquery.hijack
 =============
-This jquery plugin allows links and forms to be "ajaxified" so that their default get/post behaviour is replaced with ajax calls.
+The Hijack plugin allows links and forms to be "ajaxified" so that their default get/post behaviour is replaced with ajax calls.
 The returned content is then injected into the target container. In addition this plugin offers some unique features such as global settings,
 callbacks, recursive hijacking, conversion of inline form event handlers and setting options via inline data attributes.
 
@@ -84,7 +84,7 @@ Options
 
 - **recursive** [Boolean:false]
 
-    Setting this to true hijacks the new content.
+    Setting this to true hijacks the returned xhr content.
 
 - **canRehijack** [Boolean:true]
 
@@ -128,9 +128,9 @@ Setting Options & Callbacks
 ===========================
 Options can be set in various ways:
 
-Using the global $.hijackSetup() function. This will set the default options for all subsequent hijack requests.
+Using the global $.hijackSetup() function. This will set the default options for all subsequent hijack requests. It is similar to the [jquery.ajaxSetup](http://api.jquery.com/jQuery.ajaxSetup/) method.
     
-    $.hijackSetup({hrefs:false});
+    $.hijackSetup(options);
     
 As object arguments:
      
@@ -157,7 +157,7 @@ A few additional points to remember in regard to setting options:
 
 Events
 ======
-There are two events that can be subscribed to:
+The following events can be subscribed to:
 
 - **beforeHijack**
 
