@@ -68,15 +68,11 @@ Options
 
 - **hrefs** [Boolean:true]
 
-    Toggles hijacking of links on/off.
+    Toggles hijacking of anchor tags on/off.
 
 - **forms** [Boolean:true]
 
     Toggles hijacking of forms on/off.
-
-- **target** [String:'parent of hijacked element']
-
-    Sets the target for the returned content. In addition it also defines the scope/context in which the ajax function runs.
 
 - **data** [Object,String:{}]
 
@@ -89,6 +85,14 @@ Options
 - **canRehijack** [Boolean:true]
 
     Setting this to false will prevent (potential) subsequent hijack calls from overwriting the hijacked settings for a specific link or form.
+
+- **target** [jqObject,String:'parent of hijacked element']
+
+    Sets the target for the returned content. In addition it also defines the scope/context in which the ajax function runs.
+    
+- **context** [jqObject,String:'target']
+
+    Sets the context(scope) in which the ajax calls will run. This is set to the target by default.
 
 Callbacks
 ---------
