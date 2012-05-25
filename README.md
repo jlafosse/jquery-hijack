@@ -136,7 +136,7 @@ As object arguments:
      
      $('#foo').hijack({hrefs:false,recursive:true});
      
-Using the jquery.data() method:
+Using the jquery.data() method: (**note:** The data attribute must be set before the hijack method is called.)
     
     $('#foo').data('hijack',{hrefs:false,recursive:true}).hijack();
     
