@@ -76,7 +76,7 @@ Options
 
 - **data** [Object,String:null]
 
-    Data to be serialized & sent to the server. It is the same option available within the jquery ajax method.
+    Data to be serialized & sent to the server. It is the same option available within the [jquery.ajax](http://api.jquery.com/jQuery.ajax/) method.
 
 - **recursive** [Boolean:false]
 
