@@ -23,9 +23,13 @@ Setup default values for future hijack requests:
         }
     });
 
-Hijack using defaults:
+Hijack a specific tag:
 
-    $('#foo').hijack();
+    $('a#foo').hijack();
+    
+Hijack links & forms within a container recursively
+
+    $('#container').hijack({recursive:true});
 
 Hijack only forms:
 
@@ -34,11 +38,7 @@ Hijack only forms:
 Hijack with an alternative target:
 
     $('#foo').hijack({target:'#bar'});
-    
-Hijack content recursively:
 
-    $('#foo').hijack({recursive:true});
-    
 Hijack using a confirm callback
 
     $('#foo').hijack({
@@ -47,60 +47,77 @@ Hijack using a confirm callback
         }
     });
     
-Hijack using a before callbacks to show a loading message
+Set hijack data first, then hijack
 
-    $('#foo').hijack({
-        beforeHijack:function(){
-            $(this).html('Loading...');
-        }
-    });
+    $('#foo').data('hijack',{recursive:true}).hijack();
+
+Enable/Disable hijacking via data-hijack tag
+
+    <div id="foo">
+        <a data-hijack='1' href="/foo.html">Hijack Me!</a>
+        <a data-hijack='0' href="/foo.html">Don't Hijack Me!</a>
+    <script>
+    $('#foo').hijack();
+    </script>
     
-Hijack using an after callback to log a result
+Options & Callbacks
+===================
 
-    $('#foo').hijack({
-        afterHijack:function(data){
-            console.log(data);
-        }
-    });
+Options
+-------
 
-Available Options
-=================
+- **hrefs** [Boolean:true]
 
-    hrefs (boolean Default:true)
-Toggles hijacking of links on/off.
+    Toggles hijacking of links on/off.
 
-    forms (boolean Default:true)
-Toggles hijacking of forms on/off.
+- **forms** [Boolean:true]
 
-    target (selector Default:parent())
-Sets the target for the returned content. In addition it also defines the scope/context in which the ajax function runs.
+    Toggles hijacking of forms on/off.
 
-    data (object,string Default:{})
-Data to be serialized & sent to the server. It is the same option available within the jquery ajax method.
+- **target** [String:'parent of hijacked element']
 
-    recursive (boolean Default:false)
-Setting this to true hijacks the new content.
+    Sets the target for the returned content. In addition it also defines the scope/context in which the ajax function runs.
 
-    canRehijack (boolean Default:true)
-Setting this to false will prevent (potential) subsequent hijack calls from overwriting the hijacked settings for a specific link or form.
+- **data** [Object,String:{}]
 
-    confirmHijack (function,string Default:returns true)
-This callback is fired before hijacking is started. The passed function must return true or false. If the returned value of this callback returns anything but true then the hijacking is aborted.
+    Data to be serialized & sent to the server. It is the same option available within the jquery ajax method.
 
-    beforeHijack (function,string)
-This callback is fired after the confirm hijack but before hijacking is started.
+- **recursive** [Boolean:false]
 
-    afterHijack (function,string)
-This callback is fired after the hijacking has completed, regardless of success or failure.
+    Setting this to true hijacks the new content.
 
-    onSuccess ( function,string Default: sets the target html with the xhr response)
-This callback is fired when the ajax responds with success.
+- **canRehijack** [Boolean:true]
 
-    onError ( function,string Default: alert box with xhr response)
-This callback is fired when the ajax responds with an error.
+    Setting this to false will prevent (potential) subsequent hijack calls from overwriting the hijacked settings for a specific link or form.
 
-Setting Options
-===============
+Callbacks
+---------
+Callback functions can be implemented in one of three ways. The *normal* way is to simply set the callback as a reference to a function in either in your global $.hijackSetup()
+function or within the $('#foo').hijack() call itself. The second way is to set the callback using the jquery.data() method. The third way is to set the callback as an inline data attribute,
+however this third technique can only take the name of a function, not the reference itself.
+
+- **confirmHijack** [Function,String:returns true]
+
+    This callback is fired before hijacking is started. The passed function must return true or false. If the returned value of this callback returns anything but true then the hijacking is aborted.
+
+- **beforeHijack** [Function,String:null]
+
+    This callback is fired after the confirm hijack but before hijacking is started.
+
+- **afterHijack** [Function,String:null]
+
+    This callback is fired after the hijacking has completed, regardless of success or failure.
+
+- **onSuccess** [Function,String:'sets the target html with the xhr response']
+
+    This callback is fired when the ajax responds with success.
+
+- **onError** [Function,String:'alert box with xhr response']
+
+    This callback is fired when the ajax responds with an error.
+
+Setting Options & Callbacks
+===========================
 Options can be set in various ways:
 
 Using the global $.hijackSetup() function. This will set the default options for all subsequent hijack requests.
@@ -132,22 +149,29 @@ A few additional points to remember in regard to setting options:
 
 Events
 ======
-There are two events that can be subscribed to.
+There are two events that can be subscribed to:
 
-**beforeHijack** fires after the confirmHijack callback but before the ajax request is made.
+- **beforeHijack**
 
-    $('a#foo').on('beforeHijack',function(){
-        alert('This link is about to be hijacked!');
-    });
+    Fires after the confirmHijack callback but before the ajax request is made.
+
+        $('a#foo').on('beforeHijack',function(){
+            alert('This link is about to be hijacked!');
+        });
+
+- **afterHijack**
+
+    Fires after the ajax request has responded with success or failure.
+
+        $('a#foo').on('afterHijack',function(){
+            alert('This link was hijacked!');
+        });
     
-**afterHijack** fires after the ajax request has responded with success or failure.
-
-    $('a#foo').on('afterHijack',function(){
-        alert('This link was hijacked!');
-    });
-    
-Example 1
+Examples
 =============
+
+Example 1
+---------
 This example shows how to hijack Links & Forms within a div. Notice that the second href has specifically set the data-hijack="0" so it nevers gets hijacked.
 
     <div id="ex1">
@@ -167,7 +191,7 @@ This example shows how to hijack Links & Forms within a div. Notice that the sec
     </script>
     
 Example 2
-=============
+---------
 This example shows how to target alternative elements.
 
     <div id="ex2">
@@ -189,7 +213,7 @@ This example shows how to target alternative elements.
     </script>
 
 Example 3
-=============
+---------
 This example shows how to incorporate some type of 3rd party "loading,spinner,waiting" plugin with a confirmation before the hijack is sent.
 
     <div id="ex3">
@@ -214,7 +238,7 @@ This example shows how to incorporate some type of 3rd party "loading,spinner,wa
     </script>
     
 Example 4
-=============
+---------
 This example shows how to use the onSuccess & onError callbacks. In this example the content of a successfull response will be loaded into a 3rd party popup plugin.
 
     <div id="ex4">
@@ -236,7 +260,7 @@ This example shows how to use the onSuccess & onError callbacks. In this example
     </script>
     
 Example 5
-=============
+---------
 This example shows how hijack plays nicely with inline form event handlers. In the example below, the inline onSubmit handler will fire first, then the confirmHijack() callback will fire.
 
     <div id="ex5">
@@ -257,7 +281,7 @@ This example shows how hijack plays nicely with inline form event handlers. In t
     </script>
 
 Example 6
-=============
+---------
 This example shows how callbacks can be set as inline strings. **Note:** Format is functionName,arg1,arg2,etc
 
     <div id="ex6">
