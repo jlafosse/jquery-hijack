@@ -234,6 +234,47 @@ This example shows how to use the onSuccess & onError callbacks. In this example
         }); 
     });
     </script>
+    
+Example 5
+=============
+This example shows how to hijack plays nicely with inline form event handlers
+
+    <div id="ex5">
+        <form action="/foo.html" onsubmit="return confirm('Are you sure you want to submit?');">
+            Name: <input name="fname">
+            <input type="submit">
+        </form>
+    </div>
+     
+    <script>
+    $(function(){
+        $('#ex5').hijack({
+            confirmHijack:function(){
+                return confirm("Seriously, are you sure?");
+            }
+        }); 
+    });
+    </script>
+
+Example 6
+=============
+This example shows how callbacks can be set as inline strings. **Note:** Format is functionName,arg1,arg2,etc
+
+    <div id="ex6">
+        <a data-hijack='{"confirmHijack":"My.Foo,Are you sure?"}' href="/foo.html">Continue</a>
+    </div>
+     
+    <script>
+    var My = {};
+    My.Foo = function(s) {
+        return confirm(s);
+    };
+    
+    $(function(){
+        $('#ex5').hijack(); 
+    });
+    </script>
+
 
 Changelog
 =========
