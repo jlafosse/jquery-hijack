@@ -147,6 +147,7 @@ Setting the data attribute inline: (**note:** JSON standard requires "double" qu
 Shortcut toggling of links & forms via the data-hijack attribute: [1,0,true,false,yes,no]
 
     <a data-hijack="0" href="/foo.html">This link will not be hijacked!</a>
+    <a data-hijack="1" href="/foo.html">This link will be hijacked!</a>
     <form data-hijack="0" action="/foo.html">This form will not be hijacked!</form>
     
 A few additional points to remember in regard to setting options:
@@ -290,7 +291,7 @@ This example shows how hijack plays nicely with inline form event handlers. In t
 
 Example 6
 ---------
-This example shows how callbacks can be set as inline strings. **Note:** Format is functionName,arg1,arg2,etc
+This example shows how callbacks can be set as inline strings. **Note:** Format is nameSpace.functionName,arg1,arg2,etc
 
     <div id="ex6">
         <a data-hijack='{"confirmHijack":"My.Foo,Are you sure?"}' href="/foo.html">Continue</a>
@@ -307,6 +308,9 @@ This example shows how callbacks can be set as inline strings. **Note:** Format 
     });
     </script>
 
+License
+=======
+This plugin is dual licensed under the MIT and GPL licenses, just like jQuery itself.
 
 Changelog
 =========
