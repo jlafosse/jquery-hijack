@@ -45,7 +45,9 @@
         };
         self.executeFunctionByName = function(functionName, scope /*,args*/) {
             var args = Array.prototype.slice.call(arguments, 2);
-            if (args.length<1) { args=[]; }
+            if (args.length<1) {
+                args = arguments;
+            }
             var namespaces = functionName.split(".");
             var func = namespaces.pop();
             var context = window;
@@ -98,8 +100,8 @@
             if (util.isEmpty(callback)) { return; }
             
             // ie does not like null args in apply() method
-            if (util.isNull(args)) {
-                args = [];
+            if (util.isEmpty(args)) {
+                args = arguments;
             }
 
             if ($.isFunction(callback)) {
