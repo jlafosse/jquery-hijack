@@ -116,6 +116,7 @@
 
             return;
         };
+        
 
         // hijack <a> tags
         var _hijackHref = function($atag,atagSettings){
@@ -199,37 +200,71 @@
             // get reference to actual form el
             var ftag = $ftag.get(0);
 
-            // check for inline handlers, remove and add via jquery bind
+            // check for inline submit handler, remove and add via jquery bind
             for (i=0; i<ftag.attributes.length; i++) {
                 if (ftag.attributes[i].specified) {
                     var n = ftag.attributes[i].nodeName.toString().toLowerCase();
-                    var r = n.match(/^on([a-z]+)/);
+                    var r = n.match(/^on(submit)/);
                     if (!util.isEmpty(r)) {
                         var type = r[1];
-                        var fn = ftag.attributes[i].nodeValue.toString();
-                        var handler = new Function(fn);
-            
+                        var fnString = ftag.attributes[i].nodeValue.toString();
+                        var handler = new Function(fnString);
+                        
+                        // wrap in function to force lexical scoping thus preventing default global anonymous via Function method...
+                        var fn = function(){
+                            return handler.apply(); 
+                        }
+
                         // remove inline handler
                         $ftag.removeAttr(n);
                         
                         // bind inline handler and push to front of stack
-                        $ftag.bind(type, handler);
-                        var events = $ftag.data('events')[type];
-                        events.unshift(events.pop());
-                        $ftag.data('events')[type] = events;
+                        $ftag.bind(type, fn);
+                        
+                        var handlers = $._data($ftag[0], 'events')['submit'];
+                        handlers.unshift( handlers.pop() );
             
                     }
                 }
-            }   
-    
+            }
+
+
             $ftag.bind('submit.hijack',function(e) {
                 
                 // prevent default
                 e.preventDefault();
                 
-                // get boolean result of function if one exists (i.e. inline onsubmit)
-                if ((util.isBoolean(e.result))&&(!e.result)) { 
-                    return; 
+                // get boolean result of potential previous submit handler
+                if ((util.isBoolean(e.result))&&(!e.result)) {
+                    e.stopImmediatePropagation();
+                    return false; 
+                }
+                
+                // get all submit handlers for this ftag
+                var handlers = $._data($ftag[0], 'events')['submit'];
+                
+                // ensure that this submit event is the last, otherwise stopImmediatePropagation, re-order events & re-trigger
+                if (handlers[handlers.length-1].namespace != 'hijack') {   
+                    
+                    e.stopImmediatePropagation();
+
+                    for (var j=0; j<handlers.length; j++) {
+                        
+                        // already triggered? remove
+                        if (handlers[j].namespace != 'hijack') {
+                            handlers.splice(j,1);
+                            j--;
+                            continue;
+                        }
+                        
+                        // not last? push to end and re-trigger
+                        if ((handlers[j].namespace == 'hijack') && (j+1 != handlers.length)) {
+                            handlers.push( handlers.splice(j,1).pop() );
+                            $ftag.triggerHandler('submit');
+                            return false;
+                        }
+
+                    }
                 }
                 
                 // set target
@@ -283,14 +318,16 @@
             
             var $self = $(this);
 
+            // get "inline" data-hijack attribute
+            var inlinedata = $.parseJSON( $self.attr('data-hijack') );
+            
             // check for data-hijack='[1|0|true|false]'
-            var data = $self.data('hijack');
-            if (util.isBoolean(data)||util.isNumber(data)) {
-                $self.data('hijack',{hrefs:data,forms:data});  
+            if (util.isBoolean(inlinedata)||util.isNumber(inlinedata)) {
+                $self.data('hijack',{hrefs:inlinedata,forms:inlinedata});  
             }
 
-            // merge options & data
-            var optionsData = $.extend(true,{},options,$self.data('hijack'));
+            // merge data, options & inline data
+            var optionsData = $.extend(true,{},$self.data('hijack'),options,inlinedata);
             
             // convert strings to booleans
             optionsData.hrefs = util.stringToBoolean(optionsData.hrefs);
