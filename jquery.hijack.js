@@ -129,7 +129,7 @@
                 if (!atagSettings.canRehijack)  {
                     return;
                 }
-                $atag.unbind('submit.hijack').data('_hijacked',false);         
+                $atag.unbind('click.hijack').data('_hijacked',false);         
             }
             
             // bind the click event
