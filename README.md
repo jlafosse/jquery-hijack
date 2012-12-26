@@ -97,6 +97,10 @@ Options
 - **context** [jqObject,String:'target']
 
     Sets the context(scope) in which the ajax calls will run. This is set to the target by default.
+    
+- **removeOld** [Boolean:true]
+
+    Setting this to true will empty & remove the previous target element. This is useful since jquery object refs are cached and will still exist (but not in dom).
 
 Callbacks
 ---------

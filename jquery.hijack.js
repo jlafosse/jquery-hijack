@@ -73,6 +73,7 @@
         canRehijack:true,
         target:null,
         context:null,
+        removeOld:true,
         confirmHijack:function(){ return true; },
         beforeHijack:function(data){},
         afterHijack:function(data){},
@@ -143,12 +144,15 @@
                 
                 // set context
                 var $context = (util.isEmpty(atagSettings.context)) ? $target : $(atagSettings.context);
+                
+                // add original event
+                $context._event = e;
 
                 // confirmHijack callback
                 if (!_executeCallback(atagSettings.confirmHijack,$context)) {
                     return;
                 }
-                
+
                 // trigger custom event
                 $atag.trigger('beforeHijack');
                 
@@ -160,6 +164,11 @@
                     url:this.href,
                     data:atagSettings.data, 
                     success:function(data,textStatus,jqXHR){
+                        
+                        if (atagSettings.removeOld) {
+                            $(this).children().empty().remove();
+                        }
+                        
                         if (!util.isEmpty(data.error)) {
                             _executeCallback(atagSettings.onError,this,[data,textStatus,jqXHR]);
                         } else {
@@ -185,7 +194,7 @@
         
         // hijack <forms>
         var _hijackForm = function($ftag,ftagSettings){
-            
+
             // check to ensure that form hijacking is enabled
             if (!ftagSettings.forms) { return; }
             
@@ -273,6 +282,9 @@
                 // set context
                 var $context = (util.isEmpty(ftagSettings.context)) ? $target : $(ftagSettings.context);
                 
+                // add original event
+                $context._event = e;
+                
                 // confirmHijack callback
                 if (!_executeCallback(ftagSettings.confirmHijack,$context)) {
                     return;
@@ -289,6 +301,11 @@
                     url:ftag.action,
                     data:$ftag.serialize() + "&" + $.param(ftagSettings.data), 
                     success:function(data,textStatus,jqXHR){
+                        
+                        if (ftagSettings.removeOld) {
+                            $(this).children().empty().remove();
+                        }
+                        
                         if (!util.isEmpty(data.error)) {
                             _executeCallback(ftagSettings.onError,this,[data,textStatus,jqXHR]);
                         } else {
