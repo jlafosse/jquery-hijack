@@ -194,7 +194,7 @@
         
         // hijack <forms>
         var _hijackForm = function($ftag,ftagSettings){
-
+            
             // check to ensure that form hijacking is enabled
             if (!ftagSettings.forms) { return; }
             
@@ -340,7 +340,7 @@
             
             // check for data-hijack='[1|0|true|false]'
             if (util.isBoolean(inlinedata)||util.isNumber(inlinedata)) {
-                $self.data('hijack',{hrefs:inlinedata,forms:inlinedata});  
+                inlinedata = {hrefs:inlinedata,forms:inlinedata};
             }
 
             // merge data, options & inline data
@@ -349,7 +349,7 @@
             // convert strings to booleans
             optionsData.hrefs = util.stringToBoolean(optionsData.hrefs);
             optionsData.forms = util.stringToBoolean(optionsData.forms);
-            
+
             // save orignal options & data
             $self.data('hijack',optionsData);
             
