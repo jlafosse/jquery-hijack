@@ -170,9 +170,9 @@
                         }
                         
                         if (!util.isEmpty(data.error)) {
-                            _executeCallback(atagSettings.onError,this,[data,textStatus,jqXHR]);
+                            _executeCallback(atagSettings.onError,this,[data,textStatus,jqXHR,atagSettings]);
                         } else {
-                            _executeCallback(atagSettings.onSuccess,this,[data,textStatus,jqXHR]);
+                            _executeCallback(atagSettings.onSuccess,this,[data,textStatus,jqXHR,atagSettings]);
                             if (atagSettings.recursive) {
                                 $(this).hijack(atagSettings);
                             }
@@ -180,6 +180,7 @@
                     
                         // trigger custom event
                         $atag.trigger('afterHijack');
+                        $(this).trigger('afterHijack');
                     
                         // callback
                         _executeCallback(atagSettings.afterHijack,this,[data]);
@@ -307,9 +308,9 @@
                         }
                         
                         if (!util.isEmpty(data.error)) {
-                            _executeCallback(ftagSettings.onError,this,[data,textStatus,jqXHR]);
+                            _executeCallback(ftagSettings.onError,this,[data,textStatus,jqXHR,ftagSettings]);
                         } else {
-                            _executeCallback(ftagSettings.onSuccess,this,[data,textStatus,jqXHR]);
+                            _executeCallback(ftagSettings.onSuccess,this,[data,textStatus,jqXHR,ftagSettings]);
                             if (ftagSettings.recursive) {
                                 $(this).hijack(ftagSettings);
                             }
@@ -317,6 +318,7 @@
                     
                         // trigger custom event
                         $ftag.trigger('afterHijack');
+                        $(this).trigger('afterHijack');
                     
                         // afterHijack callback
                         _executeCallback(ftagSettings.afterHijack,this,[data]);
