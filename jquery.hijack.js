@@ -180,7 +180,6 @@
                     
                         // trigger custom event
                         $atag.trigger('afterHijack');
-                        $(this).trigger('afterHijack');
                     
                         // callback
                         _executeCallback(atagSettings.afterHijack,this,[data]);
@@ -318,7 +317,6 @@
                     
                         // trigger custom event
                         $ftag.trigger('afterHijack');
-                        $(this).trigger('afterHijack');
                     
                         // afterHijack callback
                         _executeCallback(ftagSettings.afterHijack,this,[data]);
@@ -336,7 +334,12 @@
         return this.each(function(){
             
             var $self = $(this);
-
+            
+            // skip TextNodes
+            if (util.isEmpty($self.prop('tagName'))) {
+                return;
+            }
+            
             // get "inline" data-hijack attribute
             var inlinedata = $.parseJSON( $self.attr('data-hijack') );
             
