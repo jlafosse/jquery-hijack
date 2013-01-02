@@ -61,6 +61,21 @@
                 return null;
             } 
         };
+        self.objectKey = function(obj, prop, val){
+            if (self.isEmpty(prop)) {
+                return val ? (obj = val) : obj;
+            }
+            var props = prop.split('.'),
+                keys = props.pop(), p;
+            
+            while (p = props.shift()) {
+                if (typeof obj[p] === 'undefined') {
+                    return undefined;
+                }
+                obj = obj[p];
+            }
+            return val ? (obj[keys] = val) : obj[keys];
+        }
         return self;
     }();
     
@@ -70,13 +85,14 @@
         forms:true,
         data:null,
         rehijack:true,
+        rehijackKey:null,
         canOverwrite:true,
         target:null,
         context:null,
         confirmHijack:function(){ return true; },
         beforeHijack:function(data){},
         afterHijack:function(data){},
-        onSuccess:function(data,textStatus,jqXHR) { $(this).html(data); },
+        onSuccess:function(data,textStatus,jqXHR,settings) { $(this).html(data); },
         onError:function(data,textStatus,jqXHR) { alert('ERROR: ' + data); }
     };
     
@@ -117,14 +133,23 @@
             return;
         };
         
+        // rehijack - by default hijacks data unless obj key is specified
+        var _rehijack = function(data,settings) {
 
+            var $content = $( util.objectKey(data,settings.rehijackKey) );
+            $content.hijack(settings);
+            util.objectKey(data,settings.rehijackKey,$content);
+
+            return data; 
+        };
+        
         // hijack <a> tags
         var _hijackHref = function($atag,atagSettings){
             
             // check to ensure that href hijacking is enabled and that we have a valid href
             if ((!atagSettings.hrefs) || (!$atag.attr('href')) || ($atag.attr('href').match(/.*#$/))) { return; }
             
-            // remove previous click event binding if already hijacked & can rehijack
+            // remove previous click event binding if already hijacked
             if ($atag.data('_hijacked')) {
                 if (!atagSettings.canOverwrite)  {
                     return;
@@ -166,10 +191,10 @@
                         
                         // remove old reference
                         $context = null;
-
-                        // rehijack?
+                        
+                        // rehijack
                         if (atagSettings.rehijack) {
-                            $(this).hijack(atagSettings);
+                            data = _rehijack(data,atagSettings);
                         }
 
                         if (!util.isEmpty(data.error)) {
@@ -198,7 +223,7 @@
             // check to ensure that form hijacking is enabled
             if (!ftagSettings.forms) { return; }
             
-            // remove previous submit event binding if already hijacked & can rehijack
+            // remove previous submit event binding if already hijacked
             if ($ftag.data('_hijacked')) {
                 if (!ftagSettings.canOverwrite)  {
                     return;
@@ -304,17 +329,16 @@
 
                         // remove old reference
                         $context = null;
-                        
-                        // rehijack?
+
+                        // rehijack
                         if (ftagSettings.rehijack) {
-                            $(this).hijack(ftagSettings);
+                            data = _rehijack(data,ftagSettings);
                         }
                         
                         if (!util.isEmpty(data.error)) {
                             _executeCallback(ftagSettings.onError,this,[data,textStatus,jqXHR,ftagSettings]);
                         } else {
                             _executeCallback(ftagSettings.onSuccess,this,[data,textStatus,jqXHR,ftagSettings]);
-
                         }
                     
                         // trigger custom event
