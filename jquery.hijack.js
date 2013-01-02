@@ -7,7 +7,7 @@
 /**
  * The Hijack plugin allows links and forms to be "ajaxified" so that their default get/post behaviour is replaced with ajax calls.
  * The returned content is then injected into the target container. In addition this plugin offers some unique features such as global settings,
- * callbacks, recursive hijacking, conversion of inline form event handlers and setting options via inline data attributes.
+ * callbacks, rehijack hijacking, conversion of inline form event handlers and setting options via inline data attributes.
  *
  * Hijack
  * Basic Usage: $(this).hijack({..});
@@ -69,11 +69,10 @@
         hrefs:true,
         forms:true,
         data:null,
-        recursive:true,
-        canRehijack:true,
+        rehijack:true,
+        canOverwrite:true,
         target:null,
         context:null,
-        removeOld:true,
         confirmHijack:function(){ return true; },
         beforeHijack:function(data){},
         afterHijack:function(data){},
@@ -127,7 +126,7 @@
             
             // remove previous click event binding if already hijacked & can rehijack
             if ($atag.data('_hijacked')) {
-                if (!atagSettings.canRehijack)  {
+                if (!atagSettings.canOverwrite)  {
                     return;
                 }
                 $atag.unbind('click.hijack').data('_hijacked',false);         
@@ -150,7 +149,7 @@
 
                 // confirmHijack callback
                 if (!_executeCallback(atagSettings.confirmHijack,$context)) {
-                    return;
+                    return false;
                 }
 
                 // trigger custom event
@@ -165,17 +164,18 @@
                     data:atagSettings.data, 
                     success:function(data,textStatus,jqXHR){
                         
-                        if (atagSettings.removeOld) {
-                            $(this).children().empty().remove();
+                        // remove old reference
+                        $context = null;
+
+                        // rehijack?
+                        if (atagSettings.rehijack) {
+                            $(this).hijack(atagSettings);
                         }
-                        
+
                         if (!util.isEmpty(data.error)) {
                             _executeCallback(atagSettings.onError,this,[data,textStatus,jqXHR,atagSettings]);
                         } else {
                             _executeCallback(atagSettings.onSuccess,this,[data,textStatus,jqXHR,atagSettings]);
-                            if (atagSettings.recursive) {
-                                $(this).hijack(atagSettings);
-                            }
                         }
                     
                         // trigger custom event
@@ -200,7 +200,7 @@
             
             // remove previous submit event binding if already hijacked & can rehijack
             if ($ftag.data('_hijacked')) {
-                if (!ftagSettings.canRehijack)  {
+                if (!ftagSettings.canOverwrite)  {
                     return;
                 }
                 $ftag.unbind('submit.hijack').data('_hijacked',false);         
@@ -287,7 +287,7 @@
                 
                 // confirmHijack callback
                 if (!_executeCallback(ftagSettings.confirmHijack,$context)) {
-                    return;
+                    return false;
                 }
                 
                 // trigger custom event
@@ -301,18 +301,20 @@
                     url:ftag.action,
                     data:$ftag.serialize() + "&" + $.param(ftagSettings.data), 
                     success:function(data,textStatus,jqXHR){
+
+                        // remove old reference
+                        $context = null;
                         
-                        if (ftagSettings.removeOld) {
-                            $(this).children().empty().remove();
+                        // rehijack?
+                        if (ftagSettings.rehijack) {
+                            $(this).hijack(ftagSettings);
                         }
                         
                         if (!util.isEmpty(data.error)) {
                             _executeCallback(ftagSettings.onError,this,[data,textStatus,jqXHR,ftagSettings]);
                         } else {
                             _executeCallback(ftagSettings.onSuccess,this,[data,textStatus,jqXHR,ftagSettings]);
-                            if (ftagSettings.recursive) {
-                                $(this).hijack(ftagSettings);
-                            }
+
                         }
                     
                         // trigger custom event

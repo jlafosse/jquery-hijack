@@ -2,7 +2,7 @@ jquery.hijack
 =============
 The Hijack plugin allows links and forms to be "ajaxified" so that their default get/post behaviour is replaced with ajax calls.
 The returned content is then injected into the target container. In addition this plugin offers some unique features such as global settings,
-callbacks, recursive hijacking, conversion of inline form event handlers and setting options via inline data attributes.
+callbacks, rehijack hijacking, conversion of inline form event handlers and setting options via inline data attributes.
 
 Dependencies
 ============
@@ -31,9 +31,9 @@ Hijack a specific tag:
 
     $('a#foo').hijack();
     
-Hijack links & forms within a container recursively
+Hijack links & forms within a container rehijackly
 
-    $('#container').hijack({recursive:true});
+    $('#container').hijack({rehijack:true});
 
 Hijack only forms:
 
@@ -53,7 +53,7 @@ Hijack using a confirm callback
     
 Set hijack data first, then hijack
 
-    $('#foo').data('hijack',{recursive:true}).hijack();
+    $('#foo').data('hijack',{rehijack:true}).hijack();
 
 Enable/Disable hijacking via data-hijack tag
 
@@ -82,11 +82,11 @@ Options
 
     Data to be serialized & sent to the server. It is the same option available within the [jquery.ajax](http://api.jquery.com/jQuery.ajax/) method.
 
-- **recursive** [Boolean:false]
+- **rehijack** [Boolean:false]
 
     Setting this to true hijacks the returned xhr content.
 
-- **canRehijack** [Boolean:true]
+- **canOverwrite** [Boolean:true]
 
     Setting this to false will prevent (potential) subsequent hijack calls from overwriting the hijacked settings for a specific link or form.
 
@@ -98,9 +98,6 @@ Options
 
     Sets the context(scope) in which the ajax calls will run. This is set to the target by default.
     
-- **removeOld** [Boolean:true]
-
-    Setting this to true will empty & remove the previous target element. This is useful since jquery object refs are cached and will still exist (but not in dom).
 
 Callbacks
 ---------
@@ -138,15 +135,15 @@ Using the global $.hijackSetup() function. This will set the default options for
     
 As object arguments:
      
-     $('#foo').hijack({hrefs:false,recursive:true});
+     $('#foo').hijack({hrefs:false,rehijack:true});
      
 Using the jquery.data() method: (**note:** The data attribute must be set before the hijack method is called.)
     
-    $('#foo').data('hijack',{hrefs:false,recursive:true}).hijack();
+    $('#foo').data('hijack',{hrefs:false,rehijack:true}).hijack();
     
 Setting the data attribute inline: (**note:** JSON standard requires "double" quotes so it is important to remember that the attribute itself must be enclosed with 'single' quotes.)
     
-    <div id="foo" data-hijack='{"hrefs":"false","recursive":"true"}'>
+    <div id="foo" data-hijack='{"hrefs":"false","rehijack":"true"}'>
     
 Shortcut toggling of links & forms via the data-hijack attribute: [1,0,true,false,yes,no]
 
@@ -158,7 +155,7 @@ A few additional points to remember in regard to setting options:
 
  1. Data attributes take precedence over options passed as object args
  2. Options set directly on link & form tags take precendence over parent options.
- 3. If hijack() is called on the same element more than once, any new options/data will overwrite previous settings. You can prevent this behaviour by setting the option canRehijack:false.
+ 3. If hijack() is called on the same element more than once, any new options/data will overwrite previous settings. You can prevent this behaviour by setting the option canOverwrite:false.
 
 Events
 ======
