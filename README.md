@@ -88,8 +88,9 @@ Options
     
 - **rehijackKey** [String:null]
 
-    If the returned XHR content is a complex data structure (ie. jsonrpc) and you want to rehijack then you set this key using dot notation. For example,
-    a data structure such as: {'result':{'content':'<p>Hello world</p>}}  would need rehijackKey:'result.content'.
+    If the returned XHR content is a complex data structure (ie. jsonrpc) and you want to rehijack then you set this key using dot notation. For example the following data structure would need rehijackKey:'result.content'
+    
+        {'result':{'content':'<p>Hello world</p>}}
 
 - **canOverwrite** [Boolean:true]
 
