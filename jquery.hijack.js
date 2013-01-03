@@ -136,9 +136,14 @@
         // rehijack - by default hijacks data unless obj key is specified
         var _rehijack = function(data,settings) {
 
-            var $content = $( util.objectKey(data,settings.rehijackKey) );
-            $content.hijack(settings);
-            util.objectKey(data,settings.rehijackKey,$content);
+            var content = util.objectKey(data,settings.rehijackKey);
+            
+            // ensure that the key contains data
+            if (!util.isEmpty(content)) {
+                var $content = $(content);
+                $content.hijack(settings);
+                util.objectKey(data,settings.rehijackKey,$content);
+            }
 
             return data; 
         };
