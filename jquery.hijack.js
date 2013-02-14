@@ -364,7 +364,8 @@
         
         return this.each(function(){
             
-            var $self = $(this);
+            var $self = $(this),
+                inlinedata;
             
             // skip TextNodes
             if (util.isEmpty($self.prop('tagName'))) {
@@ -372,8 +373,12 @@
             }
             
             // get "inline" data-hijack attribute
-            var inlinedata = $.parseJSON( $self.attr('data-hijack') );
-            
+            if (!util.isEmpty($self.attr('data-hijack'))) {
+                try {
+                    inlinedata = $.parseJSON( $self.attr('data-hijack') );
+                } catch(e) {console.log( e );}
+            }
+ 
             // check for data-hijack='[1|0|true|false]'
             if (util.isBoolean(inlinedata)||util.isNumber(inlinedata)) {
                 inlinedata = {hrefs:inlinedata,forms:inlinedata};
