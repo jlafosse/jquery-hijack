@@ -1,5 +1,5 @@
 /**
- * Hijack v1.0.0 - jQuery Plugin
+ * Hijack v1.1.0 - jQuery Plugin
  * Copyright (c) 2012 Jason LaFosse
  * Licensed under MIT and GPL
 */
@@ -83,17 +83,17 @@
     var hijackSettings = {
         hrefs:true,
         forms:true,
-        data:null,
+        data:{},
         rehijack:true,
         rehijackKey:null,
         canOverwrite:true,
         target:null,
         context:null,
         confirmHijack:function(){ return true; },
-        beforeHijack:function(data){},
-        afterHijack:function(data){},
-        onSuccess:function(data,textStatus,jqXHR,settings) { $(this).html(data); },
-        onError:function(data,textStatus,jqXHR) { alert('ERROR: ' + data); }
+        beforeHijack:function(){},
+        afterHijack:function(jqXHR,textStatus,settings){},
+        onSuccess:function(data,textStatus,jqXHR,settings) { console.log('success:',data) },
+        onError:function(jqXHR,textStatus,error,settings) { console.log('error:', error) }
     };
     
     // Allow defaults to be set globally
@@ -188,35 +188,41 @@
                 // beforeHijack callback
                 _executeCallback(atagSettings.beforeHijack,$context,[atagSettings]);
                 
-                // send the request
-                $.ajax({ 
-                    url:this.href,
-                    data:atagSettings.data, 
-                    success:function(data,textStatus,jqXHR){
-                        
-                        // remove old reference
-                        $context = null;
-                        
-                        // rehijack
-                        if (atagSettings.rehijack) {
-                            data = _rehijack(data,atagSettings);
-                        }
-
-                        if (!util.isEmpty(data.error)) {
-                            _executeCallback(atagSettings.onError,this,[data,textStatus,jqXHR,atagSettings]);
-                        } else {
+                
+                // set url & conext
+                atagSettings.url = this.href;
+                atagSettings.context = $context;
+                
+                // submit the form
+                $.ajax(
+                    $.extend(true,atagSettings,{
+                        success:function(data,textStatus,jqXHR){
+    
+                            // remove old reference
+                            $context = null;
+    
+                            // rehijack
+                            if (atagSettings.rehijack) {
+                                data = _rehijack(data,atagSettings);
+                            }
+                            
+                            // onSuccess callback
                             _executeCallback(atagSettings.onSuccess,this,[data,textStatus,jqXHR,atagSettings]);
+                            
+                            // trigger custom event
+                            $ftag.trigger('afterHijack');
+                        
+                            // afterHijack callback
+                            _executeCallback(atagSettings.afterHijack,this,[jqXHR,textStatus,atagSettings]);
+                            
+
+                        },
+                        error:function(jqXHR,textStatus,error) {
+                            _executeCallback(atagSettings.onError,this,[jqXHR,textStatus,error,atagSettings]);
                         }
                     
-                        // trigger custom event
-                        $atag.trigger('afterHijack');
-                    
-                        // callback
-                        _executeCallback(atagSettings.afterHijack,this,[data]);
-                    
-                    }, 
-                    context:$context
-                });
+                    })
+                );
 
             }).data('_hijacked',true);
             
@@ -308,7 +314,7 @@
                 
                 // set target
                 var $target = $(ftagSettings.target);
-                
+
                 // set context
                 var $context = (util.isEmpty(ftagSettings.context)) ? $target : $(ftagSettings.context);
                 
@@ -326,36 +332,44 @@
                 // beforeHijack callback
                 _executeCallback(ftagSettings.beforeHijack,$context,[ftagSettings]);
                 
+                
+                // set url & data
+                ftagSettings.url = ftag.action;
+                ftagSettings.data = (util.isString(ftagSettings.data)) ? ftagSettings.data : $.param(ftagSettings.data);
+                ftagSettings.data += "&" + $ftag.serialize();
+                ftagSettings.context = $context;
+                
                 // submit the form
-                $.ajax({
-                    url:ftag.action,
-                    data:$ftag.serialize() + "&" + $.param(ftagSettings.data), 
-                    success:function(data,textStatus,jqXHR){
-
-                        // remove old reference
-                        $context = null;
-
-                        // rehijack
-                        if (ftagSettings.rehijack) {
-                            data = _rehijack(data,ftagSettings);
-                        }
-                        
-                        if (!util.isEmpty(data.error)) {
-                            _executeCallback(ftagSettings.onError,this,[data,textStatus,jqXHR,ftagSettings]);
-                        } else {
+                $.ajax(
+                    $.extend(true,ftagSettings,{
+                        success:function(data,textStatus,jqXHR){
+    
+                            // remove old reference
+                            $context = null;
+    
+                            // rehijack
+                            if (ftagSettings.rehijack) {
+                                data = _rehijack(data,ftagSettings);
+                            }
+                            
+                            // onSuccess callback
                             _executeCallback(ftagSettings.onSuccess,this,[data,textStatus,jqXHR,ftagSettings]);
+                            
+                            // trigger custom event
+                            $ftag.trigger('afterHijack');
+                        
+                            // afterHijack callback
+                            _executeCallback(ftagSettings.afterHijack,this,[jqXHR,textStatus,ftagSettings]);
+                            
+
+                        },
+                        error:function(jqXHR,textStatus,error) {
+                            _executeCallback(ftagSettings.onError,this,[jqXHR,textStatus,error,ftagSettings]);
                         }
                     
-                        // trigger custom event
-                        $ftag.trigger('afterHijack');
-                    
-                        // afterHijack callback
-                        _executeCallback(ftagSettings.afterHijack,this,[data]);
-                    
-                    },
-                    context:$context
-                });
-     
+                    })
+                );
+
                 return false;
                 
             }).data('_hijacked',true);
