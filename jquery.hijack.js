@@ -210,7 +210,7 @@
                             _executeCallback(atagSettings.onSuccess,this,[data,textStatus,jqXHR,atagSettings]);
                             
                             // trigger custom event
-                            $ftag.trigger('afterHijack');
+                            $atag.trigger('afterHijack');
                         
                             // afterHijack callback
                             _executeCallback(atagSettings.afterHijack,this,[jqXHR,textStatus,atagSettings]);
