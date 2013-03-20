@@ -89,8 +89,8 @@
         canOverwrite:true,
         target:null,
         context:null,
-        confirmHijack:function(){ return true; },
-        beforeHijack:function(){},
+        confirmHijack:function(settings){ return true; },
+        beforeHijack:function(settings){},
         afterHijack:function(jqXHR,textStatus,settings){},
         onSuccess:function(data,textStatus,jqXHR,settings) { console.log('success:',data) },
         onError:function(jqXHR,textStatus,error,settings) { console.log('error:', error) }
@@ -168,17 +168,16 @@
                 // prevent default
                 e.preventDefault();
 
-                // set target
-                var $target = $(atagSettings.target);
-                
-                // set context
-                var $context = (util.isEmpty(atagSettings.context)) ? $target : $(atagSettings.context);
+                // define vars
+                var self = this,
+                    $target = $(atagSettings.target),
+                    $context = (util.isEmpty(atagSettings.context)) ? $target : $(atagSettings.context);
                 
                 // add original event
                 $context._event = e;
 
                 // confirmHijack callback
-                if (!_executeCallback(atagSettings.confirmHijack,$context)) {
+                if (!_executeCallback(atagSettings.confirmHijack,$context,[atagSettings])) {
                     return false;
                 }
 
@@ -188,19 +187,17 @@
                 // beforeHijack callback
                 _executeCallback(atagSettings.beforeHijack,$context,[atagSettings]);
                 
-                
-                // set url & conext
-                atagSettings.url = this.href;
+                // add context to settings
                 atagSettings.context = $context;
-                
-                // submit the form
-                $.ajax(
-                    $.extend(true,atagSettings,{
+            
+                // merge ajax & hijack settings
+                atagSettings = $.extend(true, atagSettings,
+                    {
                         success:function(data,textStatus,jqXHR){
-    
+        
                             // remove old reference
                             $context = null;
-    
+        
                             // rehijack
                             if (atagSettings.rehijack) {
                                 data = _rehijack(data,atagSettings);
@@ -215,12 +212,19 @@
                             // afterHijack callback
                             _executeCallback(atagSettings.afterHijack,this,[jqXHR,textStatus,atagSettings]);
                             
-
+    
                         },
                         error:function(jqXHR,textStatus,error) {
                             _executeCallback(atagSettings.onError,this,[jqXHR,textStatus,error,atagSettings]);
                         }
                     
+                    }
+                );
+                
+                // send request
+                $.ajax($.extend({},atagSettings,
+                    {
+                        url:self.href
                     })
                 );
 
@@ -272,7 +276,7 @@
                     }
                 }
             }
-
+            
 
             $ftag.bind('submit.hijack',function(e) {
                 
@@ -285,8 +289,14 @@
                     return false; 
                 }
                 
-                // get all submit handlers for this ftag
-                var handlers = $._data($ftag[0], 'events')['submit'];
+                // define vars
+                var self = this,
+                    $target = $(ftagSettings.target),
+                    $context = (util.isEmpty(ftagSettings.context)) ? $target : $(ftagSettings.context),
+                    handlers = $._data($ftag[0], 'events')['submit']; // get all submit handlers for this ftag
+                
+                // add original event
+                $context._event = e;
                 
                 // ensure that this submit event is the last, otherwise stopImmediatePropagation, re-order events & re-trigger
                 if (handlers[handlers.length-1].namespace != 'hijack') {   
@@ -312,17 +322,8 @@
                     }
                 }
                 
-                // set target
-                var $target = $(ftagSettings.target);
-
-                // set context
-                var $context = (util.isEmpty(ftagSettings.context)) ? $target : $(ftagSettings.context);
-                
-                // add original event
-                $context._event = e;
-                
                 // confirmHijack callback
-                if (!_executeCallback(ftagSettings.confirmHijack,$context)) {
+                if (!_executeCallback(ftagSettings.confirmHijack,$context,[ftagSettings])) {
                     return false;
                 }
                 
@@ -332,21 +333,18 @@
                 // beforeHijack callback
                 _executeCallback(ftagSettings.beforeHijack,$context,[ftagSettings]);
                 
-                
-                // set url & data
-                ftagSettings.url = ftag.action;
-                ftagSettings.data = (util.isString(ftagSettings.data)) ? ftagSettings.data : $.param(ftagSettings.data);
-                ftagSettings.data += "&" + $ftag.serialize();
+                // add context to settings
                 ftagSettings.context = $context;
                 
-                // submit the form
-                $.ajax(
-                    $.extend(true,ftagSettings,{
+
+                // merge ajax & hijack settings
+                ftagSettings = $.extend(true, ftagSettings,
+                    {
                         success:function(data,textStatus,jqXHR){
-    
+        
                             // remove old reference
                             $context = null;
-    
+        
                             // rehijack
                             if (ftagSettings.rehijack) {
                                 data = _rehijack(data,ftagSettings);
@@ -361,12 +359,20 @@
                             // afterHijack callback
                             _executeCallback(ftagSettings.afterHijack,this,[jqXHR,textStatus,ftagSettings]);
                             
-
+    
                         },
                         error:function(jqXHR,textStatus,error) {
                             _executeCallback(ftagSettings.onError,this,[jqXHR,textStatus,error,ftagSettings]);
                         }
                     
+                    }
+                );
+                
+                // submit the form
+                $.ajax($.extend({},ftagSettings,
+                    {
+                        url:ftag.action,
+                        data: ((util.isString(ftagSettings.data)) ? ftagSettings.data : $.param(ftagSettings.data)) + "&" + $ftag.serialize()
                     })
                 );
 
