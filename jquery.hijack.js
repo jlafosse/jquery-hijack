@@ -152,7 +152,7 @@
         var _hijackHref = function($atag,atagSettings){
             
             // check to ensure that href hijacking is enabled and that we have a valid href
-            if ((!atagSettings.hrefs) || (!$atag.attr('href')) || ($atag.attr('href').match(/.*#$/))) { return; }
+            if ((!atagSettings.hrefs) || (!$atag.attr('href')) || ($atag.attr('href').match(/^#/))) { return; }
             
             // remove previous click event binding if already hijacked
             if ($atag.data('_hijacked')) {
